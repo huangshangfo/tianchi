@@ -17,7 +17,7 @@ def loadPath():
 
 datapath,sharepath,rootpath,selfvalidpath=loadPath()
 
-toBeValided=datapath+"self_valid_knn_803.txt"
+toBeValided=datapath+"self_valid_knn.txt"
 
 TrueY=datapath+"selfValid_TrueY.txt"
 
