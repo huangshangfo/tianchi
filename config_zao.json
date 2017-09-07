@@ -1,8 +1,8 @@
 {
     "datapath":"C:\\Users\\its\\Documents\\code\\tensorDataAll\\",
     "outputpath":"C:\\Users\\its\\Documents\\code\\result\\",
-    "filepath":"tensor_fill_wan.csv",
+    "filepath":"tensor_fill_zao.csv",
     "startdate":"2017-06-01",
     "days":30,
-    "k":150
+    "k":200
 }

@@ -9,19 +9,15 @@ import datetime
 import json
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.model_selection import KFold
+TablePath="C:\\Users\\its\\Documents\\icdm\\tables\\"
 
-def loadPath():
-    with open("config.json") as f:
-        config=json.loads(f.read())
-        return config["datapath"],config["sharepath"],config["rootpath"],config["selfvalidpath"]
 
-datapath,sharepath,rootpath,selfvalidpath=loadPath()
+shareResPath="C:\\Users\\its\\Documents\\icdm\\tianchiResult\\"
 
-toBeValided=datapath+"self_valid_knn.txt"
+toBeValided=TablePath+"sv_fcn_meanzao.txt"
 
-TrueY=datapath+"selfValid_TrueY.txt"
-
-TrueYFill=datapath+"selfValid_TrueYFill.txt"
+# TrueY=datapath+"sv811_TrueY.txt"
+TrueYFill=TablePath+"sv_TrueYFill_zao.txt"
 
 def mape(toBeValided,TrueY):
     YDict={}
@@ -38,6 +34,20 @@ def mape(toBeValided,TrueY):
         notzero=0
         f_all=f.read()
         lines=f_all.split("\n")
+        link=None
+        sumi=0.0
+        for line in lines:
+            ls=line.split("#")
+            if(len(ls)==4):
+                prey=float(ls[3])
+                truey=YDict[(ls[0],ls[1],ls[2])]
+                if(link is None or link==ls[0]):
+                    sumi+=abs(prey-truey)/truey
+                else:
+                    print(sumi/900.0)
+                    sumi=abs(prey-truey)/truey
+                link=ls[0]
+        print(sumi/900.0)
         for line in lines:
             ls=line.split("#")
             if(len(ls)==4):
@@ -48,8 +58,8 @@ def mape(toBeValided,TrueY):
                 else:
                     notzero+=1
                     sumloss+=abs(prey-truey)/truey
-    return sumloss/notzero
+    return sumloss/118800.0
 
-print(mape(toBeValided,TrueY))
+# print(mape(toBeValided,TrueY))
 print(mape(toBeValided,TrueYFill))
 

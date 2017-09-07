@@ -66,21 +66,20 @@ def fcn(trainX,trainY,hiddennum,times,keep,modelname,cutime,validX,validY,lr):
     lossfun=tf.reduce_mean(tf.abs(tf.subtract(y/y_,1)))
     train_step=tf.train.AdamOptimizer(learning_rate=lr).minimize(lossfun)
     init = tf.global_variables_initializer()
-    ts=0
-    while(True):
-        sess.run(init)
-        sess.run(train_step,feed_dict={x:npx,y_:npy,keep_prob:keep})
-        loss1=sess.run(lossfun,feed_dict={x:npx,y_:npy,keep_prob:1})
-        if(loss1<30):
-            break
-        ts+=1
-        if(ts>1000):
-            break
+    sess.run(init)
+    lostsumloss=10000
+    lossup=0
     for i in range(times):
         sess.run(train_step,feed_dict={x:npx,y_:npy,keep_prob:keep})
         loss1=sess.run(lossfun,feed_dict={x:npx,y_:npy,keep_prob:1})
         loss2=sess.run(lossfun,feed_dict={x:npx_test,y_:npy_test,keep_prob:1})
         losscol.append([loss1,loss2,loss1+loss2])
+        if loss1+loss2>lostsumloss:
+            lossup+=1
+        if lossup>500:
+            break
+        lostsumloss=loss1+loss2
+    print(i)
     losscolnp=np.array(losscol)
     lossplots.append("'"+cutime+","+",".join(listmap(str,losscol[-1])))
     print(losscol[-1])
@@ -103,15 +102,10 @@ def fcn(trainX,trainY,hiddennum,times,keep,modelname,cutime,validX,validY,lr):
     gc.collect()
 
 
-allTask=listmap(str, list(range(1,6)));
+allTask=listmap(str, list(range(131,133)));
 
 if not os.path.exists(sharepath):
     os.makedirs(sharepath)
-# with open(datapath+"gy_contest_link_info.txt") as f:
-#     f.readline()
-#     all = f.readlines()
-#     for i in range(len(all)):
-#         allTask.append(all[i].split(";")[0])
 
 for taskname in allTask:
     outputs=None
@@ -136,7 +130,7 @@ for taskname in allTask:
             trainY, validY = knownY[train_index], knownY[valid_index]
             print(trainX.shape,trainY.shape,validX.shape,validY.shape,preX.shape)
             np.savetxt(path+"validYtrue.csv",validY.reshape(-1, 1), fmt="%.8f",delimiter=',')
-            lossi=fcn(trainX, trainY, [60,60,30], int(3e4), 0.88, taskname, cutime, validX, validY, 3e-4)
+            lossi=fcn(trainX, trainY, [120]*4, int(1.5e4), 0.85, taskname, cutime, validX, validY, 3e-4)
             with open(path +"lossplots"+datetime.strftime(datetime.now(),"%Y%m%d%H%M%S")+".csv","w") as f:
                 f.write("\n".join(lossplots))
             if(alltimes>=9):

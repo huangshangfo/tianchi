@@ -4,5 +4,5 @@
     "filepath":"tensor_fill_wan.csv",
     "startdate":"2017-06-01",
     "days":30,
-    "k":150
+    "k":200
 }
